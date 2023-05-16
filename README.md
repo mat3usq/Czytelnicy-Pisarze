@@ -8,11 +8,11 @@ Problem ten ma trzy rozwiązania:
 - wykluczające zagłodzenie
 
 # Kryteria
-A) dwa programy symulujące dwa różne rozwiązania tego problemu, bez
+1) dwa programy symulujące dwa różne rozwiązania tego problemu, bez
 korzystania ze zmiennych warunkowych [17p].
-B) dwa programy symulujące dwa różne rozwiązania tego problemu, przy czym
+2) dwa programy symulujące dwa różne rozwiązania tego problemu, przy czym
 jeden z nich musi korzystać ze zmiennych warunkowych (condition variable) [27p].
-C) trzy programy symulujące trzy różne rozwiązania tego problemu, przy czym
+3) trzy programy symulujące trzy różne rozwiązania tego problemu, przy czym
 przynajmniej jeden z nich musi korzystać ze zmiennych warunkowych [34p].
 
 # Dodatkowe Wymagania
