@@ -71,9 +71,14 @@ void *reader(void *arg)
 {
     while (1)
     {
+        // Poczatek Czytania
         startReading();
+        // Czas Czytania
         usleep(randomNumber());
+        // Koniec Czytania
         stopReading();
+        // Wyjscie z czytelni
+        // Ustawienie sie w kolejce
         usleep(randomNumber());
     }
 }
@@ -82,9 +87,14 @@ void *writer(void *arg)
 {
     while (1)
     {
+        // Poczatek Pisania
         startWriting();
+        // Czas Pisania
         usleep(randomNumber());
+        // Koniec Pisania
         stopWriting();
+        // Wyjscie z czytelni
+        // Ustawienie sie w kolejce
         usleep(randomNumber());
     }
 }
