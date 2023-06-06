@@ -91,8 +91,11 @@ void *writer(void *arg)
 
 int main(int argc, char *argv[])
 {
-    printf("./[PROGRAM] [-R <liczba czytelnikow>] [-W <liczba pisarzy>]\n");
-    options(argc, argv);
+    if (options(argc, argv))
+    {
+        printf("./[PROGRAM] -R [LB CZYTELNIKOW] -W [LB PISARZY]\n");
+        return -1;
+    }
 
     pthread_mutex_init(&mutex, NULL);
     pthread_cond_init(&canWrite, NULL);
