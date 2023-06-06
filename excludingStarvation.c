@@ -73,13 +73,8 @@ void *reader(void *arg)
     {
         // Poczatek Czytania
         startReading();
-        // Czas Czytania
-        usleep(randomNumber());
         // Koniec Czytania
         stopReading();
-        // Wyjscie z czytelni
-        // Ustawienie sie w kolejce
-        usleep(randomNumber());
     }
 }
 
@@ -89,13 +84,8 @@ void *writer(void *arg)
     {
         // Poczatek Pisania
         startWriting();
-        // Czas Pisania
-        usleep(randomNumber());
         // Koniec Pisania
         stopWriting();
-        // Wyjscie z czytelni
-        // Ustawienie sie w kolejce
-        usleep(randomNumber());
     }
 }
 
@@ -116,10 +106,15 @@ int main(int argc, char *argv[])
 
     for (int i = 0; i < writersCount; i++)
         pthread_create(&writers[i], NULL, writer, NULL);
+        
     for (int i = 0; i < readersCount; i++)
         pthread_create(&readers[i], NULL, reader, NULL);
+
     for (int i = 0; i < writersCount; i++)
         pthread_join(writers[i], NULL);
+
     for (int i = 0; i < readersCount; i++)
         pthread_join(readers[i], NULL);
+
+    return 0;
 }
