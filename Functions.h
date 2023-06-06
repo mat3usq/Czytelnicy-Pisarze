@@ -27,19 +27,3 @@ void info()
 {
     printf("ReaderQ: %i WriterQ: %i [in: R: %i W: %i]\n", readersCount - readingPersons, writersCount - writingPersons, readingPersons, writingPersons);
 }
-
-int randomNumber()
-{
-    srand(time(NULL)); // Inicjalizacja generatora liczb losowych
-
-    int lowerBound = 100000;
-    int upperBound = 1000000; // 2^16
-
-    // Obliczanie zakresu losowych liczb
-    int range = upperBound - lowerBound + 1;
-
-    // Generowanie losowej liczby i dodawanie wartości dolnego zakresu
-    int randomNumber = rand() % range + lowerBound;
-
-    return randomNumber;
-}
