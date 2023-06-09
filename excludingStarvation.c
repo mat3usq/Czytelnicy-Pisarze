@@ -6,75 +6,39 @@ pthread_cond_t canRead;
 unsigned int waitingReaders = 0;
 unsigned int waitingWriters = 0;
 
-void startReading()
-{
-    pthread_mutex_lock(&mutex);
-    if (waitingWriters > 0 || writingPersons > 0)
-    {
-        waitingReaders++;
-        pthread_cond_wait(&canRead, &mutex);
-    }
-    else
-    {
-        readingPersons++;
-        info();
-    }
-    pthread_mutex_unlock(&mutex);
-}
-
-void stopReading()
-{
-    pthread_mutex_lock(&mutex);
-    readingPersons--;
-
-    if (readingPersons == 0)
-        pthread_cond_signal(&canWrite);
-
-    pthread_mutex_unlock(&mutex);
-}
-
-void startWriting()
-{
-    pthread_mutex_lock(&mutex);
-
-    if (readingPersons > 0 || writingPersons > 0)
-    {
-        waitingWriters++;
-        pthread_cond_wait(&canWrite, &mutex);
-        waitingWriters--;
-    }
-
-    writingPersons = 1;
-    info();
-    pthread_mutex_unlock(&mutex);
-}
-
-void stopWriting()
-{
-    pthread_mutex_lock(&mutex);
-    writingPersons = 0;
-
-    if (waitingReaders == 0)
-        pthread_cond_signal(&canWrite);
-    else
-    {
-        pthread_cond_broadcast(&canRead);
-        readingPersons += waitingReaders;
-        waitingReaders = 0;
-        info();
-    }
-
-    pthread_mutex_unlock(&mutex);
-}
-
 void *reader(void *arg)
 {
     while (1)
     {
         // Poczatek Czytania
-        startReading();
+        pthread_mutex_lock(&mutex);
+        if (waitingWriters > 0 || writingPersons > 0)
+        {
+            waitingReaders++;
+            pthread_cond_wait(&canRead, &mutex);
+        }
+        else
+        {
+            readingPersons++;
+            info();
+        }
+        pthread_mutex_unlock(&mutex);
+
+        // Czas Czytania
+        usleep(randomTime());
+
         // Koniec Czytania
-        stopReading();
+        pthread_mutex_lock(&mutex);
+        readingPersons--;
+
+        if (readingPersons == 0)
+            pthread_cond_signal(&canWrite);
+
+        pthread_mutex_unlock(&mutex);
+
+        // Wyjscie z czytelni
+        // Dojscie do kolejki
+        usleep(randomTime());
     }
 }
 
@@ -82,10 +46,43 @@ void *writer(void *arg)
 {
     while (1)
     {
+
         // Poczatek Pisania
-        startWriting();
+        pthread_mutex_lock(&mutex);
+
+        if (readingPersons > 0 || writingPersons > 0)
+        {
+            waitingWriters++;
+            pthread_cond_wait(&canWrite, &mutex);
+            waitingWriters--;
+        }
+
+        writingPersons = 1;
+        info();
+        pthread_mutex_unlock(&mutex);
+
+        // Czas pisania
+        usleep(randomTime());
+
         // Koniec Pisania
-        stopWriting();
+        pthread_mutex_lock(&mutex);
+        writingPersons = 0;
+
+        if (waitingReaders == 0)
+            pthread_cond_signal(&canWrite);
+        else
+        {
+            pthread_cond_broadcast(&canRead);
+            readingPersons += waitingReaders;
+            waitingReaders = 0;
+            info();
+        }
+
+        pthread_mutex_unlock(&mutex);
+
+        // Wyjscie z czytelni
+        // Dojscie do kolejki
+        usleep(randomTime());
     }
 }
 
@@ -106,7 +103,7 @@ int main(int argc, char *argv[])
 
     for (int i = 0; i < writersCount; i++)
         pthread_create(&writers[i], NULL, writer, NULL);
-        
+
     for (int i = 0; i < readersCount; i++)
         pthread_create(&readers[i], NULL, reader, NULL);
 
