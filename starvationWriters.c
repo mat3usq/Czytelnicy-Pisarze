@@ -3,45 +3,32 @@
 pthread_mutex_t readerMutex;
 pthread_mutex_t writerMutex;
 
-void startReading()
-{
-    pthread_mutex_lock(&readerMutex);
-    if (readingPersons == 0)
-        pthread_mutex_lock(&writerMutex);
-    readingPersons++;
-    info();
-    pthread_mutex_unlock(&readerMutex);
-}
-
-void stopReading()
-{
-    pthread_mutex_lock(&readerMutex);
-    readingPersons--;
-    if (readingPersons == 0)
-        pthread_mutex_unlock(&writerMutex);
-    pthread_mutex_unlock(&readerMutex);
-}
-
-void startWriting()
-{
-    pthread_mutex_lock(&writerMutex);
-    writingPersons++;
-    info();
-}
-
-void stopWriting()
-{
-    writingPersons--;
-    pthread_mutex_unlock(&writerMutex);
-}
-
 void *reader(void *arg)
 {
     srand(time(NULL));
     while (1)
     {
-        startReading();
-        stopReading();
+        // Poczatek Czytania
+        pthread_mutex_lock(&readerMutex);
+        if (readingPersons == 0)
+            pthread_mutex_lock(&writerMutex);
+        readingPersons++;
+        info();
+        pthread_mutex_unlock(&readerMutex);
+
+        // Czas Czytania
+        usleep(randomTime());
+
+        // Koniec Czytania
+        pthread_mutex_lock(&readerMutex);
+        readingPersons--;
+        if (readingPersons == 0)
+            pthread_mutex_unlock(&writerMutex);
+        pthread_mutex_unlock(&readerMutex);
+
+        // Wyjscie z czytelni
+        // Dojscie do kolejki
+        usleep(randomTime());
     }
     return NULL;
 }
@@ -51,8 +38,21 @@ void *writer(void *arg)
     srand(time(NULL));
     while (1)
     {
-        startWriting();
-        stopWriting();
+        // Poczatek Pisania
+        pthread_mutex_lock(&writerMutex);
+        writingPersons++;
+        info();
+
+        // Czas pisania
+        usleep(randomTime());
+
+        // Koniec Pisania
+        writingPersons--;
+        pthread_mutex_unlock(&writerMutex);
+
+        // Wyjscie z czytelni
+        // Dojscie do kolejki
+        usleep(randomTime());
     }
     return NULL;
 }
