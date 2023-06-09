@@ -27,3 +27,9 @@ void info()
 {
     printf("ReaderQ: %i WriterQ: %i [in: R: %i W: %i]\n", readersCount - readingPersons, writersCount - writingPersons, readingPersons, writingPersons);
 }
+
+int randomTime()
+{
+    int randomNumber = rand() % 900001 + 100000; // Losowanie liczby z zakresu 0-900000 i dodanie 100000
+    return randomNumber;
+}
