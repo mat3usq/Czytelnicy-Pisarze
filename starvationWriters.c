@@ -22,6 +22,7 @@ void *reader(void *arg)
         // Koniec Czytania
         pthread_mutex_lock(&readerMutex);
         readingPersons--;
+        info();
         if (readingPersons == 0)
             pthread_mutex_unlock(&writerMutex);
         pthread_mutex_unlock(&readerMutex);
@@ -48,6 +49,7 @@ void *writer(void *arg)
 
         // Koniec Pisania
         writingPersons--;
+        info();
         pthread_mutex_unlock(&writerMutex);
 
         // Wyjscie z czytelni
